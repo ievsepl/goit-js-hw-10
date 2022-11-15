@@ -14,23 +14,25 @@ const refs = {
 
   DEBOUNCE_DELAY: 300,
 };
+let nameValue = '';
 
 refs.input.addEventListener(
   'input',
   debounce(onInputFunc, refs.DEBOUNCE_DELAY)
 );
 refs.countryList.addEventListener('click', onCountryListClick);
+
 function onCountryListClick(e) {
   if (e.target) {
     nameValue = e.target.childNodes[1].data;
+    return;
   }
   console.dir(e.target.childNodes[1].data);
+  console.log(nameValue);
 }
 
-let nameValue = '';
 function onInputFunc(e) {
   e.preventDefault();
-
   nameValue = refs.input.value.trim();
 
   fetchCountries(nameValue)

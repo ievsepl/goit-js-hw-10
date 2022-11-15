@@ -21,11 +21,18 @@ body {
 #search-box {
   font: inherit;
   padding: 8px;
-  width: 520px;
+  max-width: 520px;
   margin-bottom: 16px;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content:center; */
   margin: auto;
 }
 
 li{
   list-style: none;
+}
+.country-list{
+  cursor: pointer;
+  
 }
