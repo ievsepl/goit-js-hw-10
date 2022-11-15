@@ -10,14 +10,22 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  background-color: bisque;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #search-box {
   font: inherit;
   padding: 8px;
-  max-width: 320px;
+  width: 520px;
   margin-bottom: 16px;
+  margin: auto;
 }
+
 li{
   list-style: none;
 }

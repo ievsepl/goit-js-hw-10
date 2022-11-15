@@ -15,21 +15,23 @@ const refs = {
   DEBOUNCE_DELAY: 300,
 };
 
-// refs.countryList.addEventListener('click', onCountryListClick);
 refs.input.addEventListener(
   'input',
   debounce(onInputFunc, refs.DEBOUNCE_DELAY)
 );
-// function onCountryListClick(e) {
-//   const chooseCountry = e.target;
-//   return chooseCountry;
-// }
-//
+refs.countryList.addEventListener('click', onCountryListClick);
+function onCountryListClick(e) {
+  if (e.target) {
+    nameValue = e.target.childNodes[1].data;
+  }
+  console.dir(e.target.childNodes[1].data);
+}
 
+let nameValue = '';
 function onInputFunc(e) {
   e.preventDefault();
 
-  let nameValue = refs.input.value.trim();
+  nameValue = refs.input.value.trim();
 
   fetchCountries(nameValue)
     .then(countries => {
@@ -66,13 +68,6 @@ function renderUserList(countries) {
     .join('');
   refs.countryList.innerHTML = markup;
   refs.countryCard.innerHTML = '';
-  refs.countryList.addEventListener('click', onCountryListClick);
-  function onCountryListClick(e) {
-    if (e.target) {
-      renderCountryCard(e.target.childNodes[1].data);
-    }
-    console.dir(e.target.childNodes[1].data);
-  }
 }
 
 function renderCountryCard(countries) {
