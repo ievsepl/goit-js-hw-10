@@ -3,51 +3,42 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import './css/styles.css';
 import { fetchCountries } from './fetchCountries.js';
 
-//
-// import { templateFunction } from './templates/country-list.hbs';
-// console.log(Handlebars.VERSION);
-
 const refs = {
   input: document.querySelector('#search-box'),
   countryList: document.querySelector('.country-list'),
   countryCard: document.querySelector('.country-info'),
-
   DEBOUNCE_DELAY: 300,
 };
-let nameValue = '';
 
-refs.input.addEventListener(
-  'input',
-  debounce(onInputFunc, refs.DEBOUNCE_DELAY)
-);
-refs.countryList.addEventListener('click', onCountryListClick);
+refs.input.addEventListener('input', debounce(onInputCountry, 500));
+refs.countryList.addEventListener('click', onCountryClick);
 
-function onCountryListClick(e) {
-  if (e.target) {
-    nameValue = e.target.childNodes[1].data;
+function onInputCountry(e) {
+  e.preventDefault();
+  let inputValue = e.target.value.trim();
+  if (inputValue === '') {
+    refs.countryCard.innerHTML = '';
+    refs.countryList.innerHTML = '';
+
     return;
+  } else {
+    renderCountriesData(inputValue);
   }
-  console.dir(e.target.childNodes[1].data);
-  console.log(nameValue);
 }
 
-function onInputFunc(e) {
-  e.preventDefault();
-  nameValue = refs.input.value.trim();
-
-  fetchCountries(nameValue)
+function renderCountriesData(inputCountryName) {
+  fetchCountries(inputCountryName)
     .then(countries => {
       if (countries.length > 10) {
         Notify.info(
           'Too many matches found. Please enter a more specific name.'
         );
-        refs.countryList.innerHTML = '';
-
-        return;
-      } else if (countries.length >= 2 && countries.length <= 10) {
+      } else if (countries.length <= 10 && countries.length >= 2) {
         renderUserList(countries);
+        refs.countryCard.innerHTML = '';
       } else {
         renderCountryCard(countries);
+        refs.countryList.innerHTML = '';
       }
     })
     .catch(error => {
@@ -58,18 +49,15 @@ function onInputFunc(e) {
     });
 }
 
-// console.log('name', nameValue);
-
 function renderUserList(countries) {
   const markup = countries
     .map(country => {
       return `<li>
-      <p><b><img src = "${country.flags.svg}" alt="Flag" width = "30px"/></b> ${country.name.official}</p>    
+      <p s><b><img src = "${country.flags.svg}" alt="Flag" width = "40px"/></b> ${country.name.official}</p>    
             </li>`;
     })
     .join('');
   refs.countryList.innerHTML = markup;
-  refs.countryCard.innerHTML = '';
 }
 
 function renderCountryCard(countries) {
@@ -80,21 +68,16 @@ function renderCountryCard(countries) {
       }" alt="Flag" width = "30px"/></b> ${country.name.official}</p>
               <p><b>Capital</b>: ${country.capital}</p>
               <p><b>population</b>: ${country.population}</p>
-              <p><b>languages</b>: ${Object.values(country.languages)}</p>
-
-            </li>`;
+              <p><b>languages</b>: ${Object.values(country.languages)}</p> `;
     })
     .join('');
   refs.countryCard.innerHTML = markup;
-  refs.countryList.innerHTML = '';
 }
 
-// name.official - повна назва країни
-// capital - столиця
-// population - населення
-// flags.svg - посилання на зображення прапора
-// languages - масив мов
-// Notify.failure('Qui timide rogat docet negare');
-// Notify.info('Cogito ergo sum');
-// Notify.warning('Memento te hominem esse');
-// Notify.success('Sol lucet omnibus');
+function onCountryClick(e) {
+  if (e.target) {
+    console.log(e.target.textContent);
+    let putCountry = e.target.textContent.trim();
+    renderCountriesData(putCountry);
+  }
+}
